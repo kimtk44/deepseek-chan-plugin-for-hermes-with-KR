@@ -272,7 +272,7 @@ app.whenReady().then(() => {
               click: () => toPage({ type: 'panel', open: true, focus: 'size' }) },
           ] },
           { type: 'separator' },
-          { label: '창으로 돌아가기',
+          { label: 'Harness로 돌아가기',
             /** 창 안으로 돌아가기 */
             click: () => toPage({ type: 'home' }) },
           { label: '캐릭터 잠시 숨기기',

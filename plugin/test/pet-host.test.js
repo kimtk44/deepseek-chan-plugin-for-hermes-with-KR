@@ -432,7 +432,7 @@ test('ready가 오지 않으면 시간 제한 뒤 펫을 끝내고 오류를 알
 
 test('펫 창 우클릭 메뉴: 설정·크기 프리셋·돌아가기·숨기기·소품·체형을 담고 상태를 페이지에서 받는다', async () => {
   const main = await readFile(new URL('../../pet/main.cjs', import.meta.url), 'utf8')
-  for (const label of ['설정…', '크기', '창으로 돌아가기', '캐릭터 잠시 숨기기', '소품·옷', '체형']) assert.ok(main.includes(label), label)
+  for (const label of ['설정…', '크기', 'Harness로 돌아가기', '캐릭터 잠시 숨기기', '소품·옷', '체형']) assert.ok(main.includes(label), label)
   assert.match(main, /toPage\(\{ type: 'panel', open: true \}\)/)
   assert.match(main, /toPage\(\{ type: 'size', ratio: sizeRatio \}\)/)
   assert.match(main, /toHost\(\{ type: 'config', list: \[\['character', false\]\] \}\)/)

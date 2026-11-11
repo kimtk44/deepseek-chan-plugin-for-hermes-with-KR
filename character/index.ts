@@ -1088,7 +1088,7 @@ export function createCharacter({ base, life, pet = null, prefs: initialPrefs = 
         hideChip = life.own(document.createElement("button"), (node) => node.remove());
         hideChip.type = "button";
         hideChip.id = "dsc-hide-chip";
-        hideChip.textContent = "캐릭터 숨김 · 다시 표시";
+        hideChip.textContent = "숨긴 캐릭터 다시 표시";
         hideChip.addEventListener("click", () => setHidden(false));
         document.body.append(hideChip);
       };

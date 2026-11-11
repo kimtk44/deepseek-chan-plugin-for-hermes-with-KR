@@ -13,7 +13,7 @@ export const OUTFIT_ITEMS = [
   { key: 'glasses', ko: '뿔테 안경', en: 'Glasses', param: 'key11', on: 1, line: 'outfit_glasses' },
   { key: 'monocle', ko: '외눈 안경', en: 'Monocle', param: 'key12', on: 1, line: 'outfit_glasses' },
   { key: 'skirt', ko: '치마 길이 바꾸기', en: 'Change skirt length', param: 'Clothes1', on: -1, line: 'outfit_skirt_long' },
-  { key: 'chestClothes', ko: '가슴 옷 바꾸기', en: 'Change top', param: 'Clothes3', on: 1, line: 'outfit_chest_cover' },
+  { key: 'chestClothes', ko: '상의 바꾸기', en: 'Change top', param: 'Clothes3', on: 1, line: 'outfit_chest_cover' },
   { key: 'shoesOff', ko: '신발 벗기', en: 'Take off shoes', param: 'Clothes4', on: 1, line: 'outfit_shoes' },
   { key: 'tailHide', ko: '꼬리 숨기기', en: 'Hide tail', param: 'Clothes5', on: -1, line: 'outfit_tail' },
   // 동물귀는 파라미터가 아니라 모델 파트(Part159)의 불투명도로 부드럽게 감춘다 (character/index.js의 earHide)

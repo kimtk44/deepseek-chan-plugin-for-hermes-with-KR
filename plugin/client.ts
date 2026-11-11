@@ -625,7 +625,7 @@ function parseJsonObject(text: string, ko: boolean) {
     const value = JSON.parse(trimmed)
     if (value && typeof value === 'object' && !Array.isArray(value)) return { value }
   } catch {}
-  return { error: ko ? '{ "이름": 값 } 형태의 JSON 객체를 넣어 주세요.' : 'Enter a JSON object such as { "name": value }.' }
+  return { error: ko ? '{ "이름": 값 } 형식의 JSON 객체를 입력해 주세요.' : 'Enter a JSON object such as { "name": value }.' }
 }
 
 /** 음성 API 키 입력 칸. 저장 여부만 표시하고, 저장한 뒤에는 입력값 비움 */
@@ -637,7 +637,7 @@ function TtsKeyField({ keys, ko, disabled }: { keys: KeyStore; ko: boolean; disa
   const t = (korean: string, english: string) => (ko ? korean : english)
   const status = !key.available ? t('Harness 자격 증명 저장소에 연결되지 않았습니다.', 'The Harness credential store is unavailable.')
     : key.configured ? t('저장됨', 'Saved') + (key.source ? ' (' + key.source + ')' : '')
-      : t('저장된 키 없음 · 키가 필요 없는 로컬 서버는 비워 두기', 'No key saved · leave empty for local servers that need none')
+      : t('저장된 키가 없습니다. 키 없이 쓰는 로컬 서버라면 비워 두세요.', 'No key saved · leave empty for local servers that need none')
   /** 입력한 키 저장 (빈 칸이면 무시) */
   const save = async () => {
     if (!draft.trim()) return
@@ -712,7 +712,7 @@ function TtsSection({ form, keys, ko, writable, tts }: { form: ConfigForm<Plugin
   const number = (path: string[], label: string, value: unknown, min: number, extra: Partial<TtsFieldProps> = {}) => text(path, label, {
     type: 'number', min, max: extra.max, step: 1, value: value === undefined ? '' : String(value), ...extra,
     /** 범위 안 정수면 저장, 아니면 안내 문구 */
-    commit: (draft: string) => { const n = Number(draft); return Number.isInteger(n) && n >= min && n <= (extra.max ?? Infinity) ? write(path, n) : t(min + '~' + extra.max + ' 범위의 정수를 넣어 주세요.', 'Enter a whole number from ' + min + ' to ' + extra.max + '.') },
+    commit: (draft: string) => { const n = Number(draft); return Number.isInteger(n) && n >= min && n <= (extra.max ?? Infinity) ? write(path, n) : t(min + '~' + extra.max + ' 범위의 정수를 입력해 주세요.', 'Enter a whole number from ' + min + ' to ' + extra.max + '.') },
   })
   /**
    * 시간 입력 칸. 화면에서는 초, 저장은 ms
@@ -721,7 +721,7 @@ function TtsSection({ form, keys, ko, writable, tts }: { form: ConfigForm<Plugin
   const seconds = (path: string[], label: string, ms: number | undefined) => text(path, label, {
     type: 'number', min: 1, max: 600, step: 0.001, value: ms === undefined ? '' : String(ms / 1000),
     /** 1~600초면 ms로 바꿔 저장, 아니면 안내 문구 */
-    commit: (draft: string) => { const n = Number(draft); return Number.isFinite(n) && n >= 1 && n <= 600 ? write(path, Math.round(n * 1000)) : t('1~600초로 넣어 주세요.', 'Enter 1 to 600 seconds.') },
+    commit: (draft: string) => { const n = Number(draft); return Number.isFinite(n) && n >= 1 && n <= 600 ? write(path, Math.round(n * 1000)) : t('1~600초 사이의 값을 입력해 주세요.', 'Enter 1 to 600 seconds.') },
   })
   /** 켜고 끄는 확인란 (바꾸는 즉시 저장) */
   const check = (path: string[], label: string, checked: boolean) => React.createElement('label', { key: path.join('.'), style: toggleRow },
@@ -729,34 +729,34 @@ function TtsSection({ form, keys, ko, writable, tts }: { form: ConfigForm<Plugin
     React.createElement('input', { type: 'checkbox', checked, disabled: off,
       /** 확인 상태 저장 */
       onChange: (event) => write(path, event.target.checked) }))
-  const serverDefault = t('비우면 서버 기본값', 'Empty = server default')
+  const serverDefault = t('비워 두면 서버 기본값 사용', 'Empty = server default')
   return React.createElement('section', { 'aria-label': t('말풍선 음성', 'Speech bubble voice'), style: sectionStyle },
     React.createElement('div', { style: toggleRow },
       React.createElement('strong', null, t('말풍선 음성', 'Speech bubble voice')),
       React.createElement('input', { type: 'checkbox', 'aria-label': t('말풍선을 소리 내어 읽기', 'Read speech bubbles aloud'), checked: settings.enabled === true, disabled: off,
         /** 음성 켜기·끄기 저장 */
         onChange: (event) => write(['enabled'], event.target.checked) })),
-    settings.enabled === true && !openai.baseUrl ? React.createElement('p', { role: 'status', style: { margin: 0 } }, t('API 주소를 넣어야 소리가 납니다.', 'Enter an API address to hear speech.')) : null,
+    settings.enabled === true && !openai.baseUrl ? React.createElement('p', { role: 'status', style: { margin: 0 } }, t('음성을 들으려면 API 주소를 입력해 주세요.', 'Enter an API address to hear speech.')) : null,
     ttsGroup(t('연결', 'Connection'),
-      text(['openai', 'baseUrl'], t('API 주소', 'API address'), { value: openai.baseUrl, placeholder: 'https://api.openai.com/v1', hint: t('/v1까지 입력 (OpenAI 호환 TTS)', 'Up to /v1 (OpenAI-compatible TTS)') }),
+      text(['openai', 'baseUrl'], t('API 주소', 'API address'), { value: openai.baseUrl, placeholder: 'https://api.openai.com/v1', hint: t('/v1까지 포함한 주소를 입력합니다 (OpenAI 호환 TTS).', 'Up to /v1 (OpenAI-compatible TTS)') }),
       React.createElement(TtsKeyField, { key: 'key', keys, ko, disabled: off })),
     ttsGroup(t('목소리', 'Voice'),
       text(['openai', 'model'], t('모델', 'Model'), { value: openai.model, placeholder: serverDefault }),
       text(['openai', 'voice'], t('목소리 ID', 'Voice ID'), { value: openai.voice, placeholder: serverDefault }),
-      number(['stream', 'pcmSampleRate'], t('샘플레이트 (Hz)', 'Sample rate (Hz)'), settings.stream?.pcmSampleRate, 8000, { max: 48000, hint: t('서버가 보내는 오디오와 같아야 함 (OpenAI 24000 · Fish 44100)', 'Must match the audio the server sends (OpenAI 24000 · Fish 44100)') })),
+      number(['stream', 'pcmSampleRate'], t('샘플레이트 (Hz)', 'Sample rate (Hz)'), settings.stream?.pcmSampleRate, 8000, { max: 48000, hint: t('서버가 보내는 오디오와 샘플레이트가 같아야 합니다 (OpenAI 24000 · Fish 44100).', 'Must match the audio the server sends (OpenAI 24000 · Fish 44100)') })),
     ttsGroup(t('읽을 대사', 'Lines to read'),
       ...VOICE_LINES.map(([field, koLabel, enLabel]) => check(['voiceLines', field], ko ? koLabel : enLabel, settings.voiceLines?.[field] === true))),
     React.createElement('details', { style: groupStyle },
       React.createElement('summary', { style: groupTitleStyle }, t('고급', 'Advanced')),
       React.createElement('div', { style: { display: 'grid', gap: 10, paddingTop: 4 } },
         json(['openai', 'extraBody'], t('추가 요청 값 (JSON)', 'Extra request values (JSON)'), openai.extraBody, '{ "speed": 1.1 }',
-          t('요청 본문에 합쳐집니다. input·response_format·stream_format은 플러그인이 정하고, 위 모델·목소리 ID가 우선합니다.', 'Merged into the request body. The plugin sets input, response_format and stream_format; the model and voice ID above win.')),
+          t('요청 본문에 추가할 값입니다. input·response_format·stream_format은 플러그인이 지정하며 모델과 목소리는 위에 입력한 ID를 우선합니다.', 'Merged into the request body. The plugin sets input, response_format and stream_format; the model and voice ID above win.')),
         json(['openai', 'headers'], t('추가 헤더 (JSON)', 'Extra headers (JSON)'), openai.headers, '{ "X-Example": "value" }'),
-        text(['openai', 'textPrefix'], t('대사 앞 문구', 'Line prefix'), { value: openai.textPrefix, placeholder: '[밝고 장난스럽게] ', hint: t('모든 대사 앞에 붙습니다 (예: Drama 3 연기 지시)', 'Prepended to every line (e.g. Drama 3 directions)') }),
+        text(['openai', 'textPrefix'], t('대사 앞 문구', 'Line prefix'), { value: openai.textPrefix, placeholder: '[밝고 장난스럽게] ', hint: t('모든 대사 앞에 붙일 문구입니다 (예: Drama 3 연기 지시).', 'Prepended to every line (e.g. Drama 3 directions)') }),
         seconds(['openai', 'timeoutMs'], t('응답 대기 시간 (초)', 'Response timeout (seconds)'), openai.timeoutMs),
-        check(['cache', 'enabled'], t('같은 대사 다시 쓰기 (캐시)', 'Reuse audio for repeated lines (cache)'), settings.cache?.enabled !== false),
+        check(['cache', 'enabled'], t('같은 대사의 음성 재사용 (캐시)', 'Reuse audio for repeated lines (cache)'), settings.cache?.enabled !== false),
         text(['openai', 'apiKeyEnv'], t('API 키 저장 이름', 'API key name'), { value: openai.apiKeyEnv ?? DEFAULT_KEY_REF, hint: t('저장된 키를 먼저 쓰고, 없으면 같은 이름의 환경변수를 씁니다. 비우면 인증 없이 요청합니다.', 'A saved key is used first, then the environment variable of the same name. Empty sends no authorization.') }))),
-    React.createElement('p', { style: { margin: 0, opacity: 0.7 } }, t('AI가 만든 음성입니다. 켜면 대사가 위 주소로 전송되고, 서비스에 따라 요금이 나올 수 있습니다.', 'This is an AI-generated voice. When on, lines are sent to the address above, and the service may charge for them.')),
+    React.createElement('p', { style: { margin: 0, opacity: 0.7 } }, t('AI로 만든 음성을 사용합니다. 이 기능을 켜면 대사가 위 주소로 전송되며 서비스에 따라 요금이 청구될 수 있습니다.', 'This is an AI-generated voice. When on, lines are sent to the address above, and the service may charge for them.')),
     error ? React.createElement('p', { role: 'alert' }, error) : null)
 }
 
@@ -768,16 +768,16 @@ function updateSection(updater: Updater, ko: boolean) {
   const versions = [snapshot.current && t('현재 ' + snapshot.current, 'Installed ' + snapshot.current), snapshot.latest && t('최신 ' + snapshot.latest, 'Latest ' + snapshot.latest)].filter(Boolean).join(' · ')
   const text = {
     unavailable: t('Harness 플러그인 관리자에 연결되지 않아 업데이트를 확인할 수 없습니다.', 'Plugin manager is unavailable, so updates cannot be checked.'),
-    checking: t('업데이트를 확인하는 중입니다…', 'Checking for updates…'),
+    checking: t('업데이트 확인 중…', 'Checking for updates…'),
     current: t('최신 버전입니다.', 'You are up to date.'),
     available: t('새 버전이 있습니다.', 'A new version is available.'),
-    confirm: t('업데이트하는 동안 이 플러그인이 잠시 꺼졌다가 새 버전으로 다시 켜집니다. 설정은 그대로 남습니다. 혹시 실패하면 Plugins의 + Add plugin에서 같은 GitHub 주소로 다시 추가하세요.',
+    confirm: t('업데이트 중에는 플러그인이 잠시 꺼집니다. 새 버전이 켜져도 설정은 유지됩니다. 실패하면 Plugins → + Add plugin에서 같은 GitHub 주소로 다시 추가해 주세요.',
       'The plugin turns off briefly and comes back as the new version. Settings are kept. If it fails, add the same GitHub address again from Plugins → + Add plugin.'),
-    updating: t('업데이트하는 중입니다… 창을 닫지 마세요.', 'Updating… keep this window open.'),
+    updating: t('업데이트 중입니다. 창을 닫지 마세요.', 'Updating… keep this window open.'),
     updated: t('업데이트했습니다.' + (snapshot.from ? ' (' + snapshot.from + ' → ' + (snapshot.current || snapshot.latest) + ')' : ''), 'Updated.' + (snapshot.from ? ' (' + snapshot.from + ' → ' + (snapshot.current || snapshot.latest) + ')' : '')),
     restart: t('업데이트했습니다. Harness를 다시 시작하면 새 버전이 적용됩니다.', 'Updated. Restart Harness to use the new version.'),
     unsupported: t('GitHub 주소로 설치한 경우에만 여기서 업데이트할 수 있습니다.', 'Updates here work only for plugins installed from a GitHub address.'),
-    pinned: t('특정 커밋에 고정해 설치해서 여기서는 업데이트하지 않습니다.', 'This install is pinned to a commit, so it is not updated here.'),
+    pinned: t('특정 커밋으로 고정한 설치는 여기서 업데이트할 수 없습니다.', 'This install is pinned to a commit, so it is not updated here.'),
     'check-failed': t('업데이트를 확인하지 못했습니다.', 'Could not check for updates.'),
     'update-failed': t('업데이트하지 못했습니다.', 'Update failed.'),
   }[snapshot.phase] ?? ''
@@ -907,7 +907,7 @@ function CanvasHiddenNotice({ ko, link }: { ko: boolean; link: CharacterLink }) 
   }, [])
   if (!hidden) return null
   return React.createElement('div', { role: 'status', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 10, opacity: 0.9 } },
-    React.createElement('span', null, ko ? '지금 캔버스가 숨겨져 있습니다(캐릭터 설정은 켜져 있음).' : 'The canvas is hidden right now (the character setting is still on).'),
+    React.createElement('span', null, ko ? '캐릭터 설정은 켜져 있지만 화면에서는 잠시 숨겨져 있습니다.' : 'The canvas is hidden right now (the character setting is still on).'),
     React.createElement('button', { type: 'button',
       /** 캔버스 다시 표시 */
       onClick: () => { try { link.character?.toggleCanvas?.() } catch {} setHidden(false) } },
@@ -979,7 +979,7 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
         React.createElement('input', { type: 'checkbox', role: 'switch', checked: state.value?.extraLines === true, disabled: off,
           /** 켜짐 여부 저장 */
           onChange: (event) => change('extraLines', event.target.checked) })),
-      React.createElement('p', { style: { opacity: 0.7 } }, ko ? '변경 사항은 바로 적용되고 저장됩니다. 한국어는 설정 → 일반 설정 → 언어에서 선택할 수 있습니다.' : 'Changes apply and save immediately. Select Korean under Settings → General → Language.'),
+      React.createElement('p', { style: { opacity: 0.7 } }, ko ? '설정은 바꾸는 즉시 저장되고 적용됩니다. 화면 언어는 설정 → 일반 설정 → 언어에서 한국어로 바꿀 수 있습니다.' : 'Changes apply and save immediately. Select Korean under Settings → General → Language.'),
       React.createElement('section', { 'aria-label': ko ? '소품·옷' : 'Accessories and outfit', style: { display: 'grid', gap: 10, borderTop: '1px solid rgba(127,127,127,.25)', paddingTop: 14 } },
         React.createElement('strong', null, ko ? '소품·옷' : 'Accessories and outfit'),
         ...OUTFIT_FIELDS.map(([field, koLabel, enLabel]) => outfitSwitch([field, ko ? koLabel : enLabel]))),
@@ -993,7 +993,7 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
       React.createElement('section', { 'aria-label': ko ? '절전' : 'Power saving', style: { display: 'grid', gap: 10, borderTop: '1px solid rgba(127,127,127,.25)', paddingTop: 14 } },
         React.createElement('strong', null, ko ? '절전' : 'Power saving'),
         React.createElement('label', { style: row },
-          React.createElement('span', null, ko ? '입력이 없으면 잠시 쉬기 (화면 밖으로 나가 렌더링을 멈춤)' : 'Rest when idle (leaves the screen and stops rendering)'),
+          React.createElement('span', null, ko ? '입력이 없으면 잠시 쉬기 (화면 밖으로 나가 그리기 중단)' : 'Rest when idle (leaves the screen and stops rendering)'),
           React.createElement('input', { type: 'checkbox', role: 'switch', checked: state.value?.idleSleep !== false, disabled: off,
             /** 절전 켜짐 여부 저장 */
             onChange: (event) => change('idleSleep', event.target.checked) })),
@@ -1004,7 +1004,7 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
             onChange: (event) => change('idleSleepMinutes', sleepMinutes(event.target.value)) }))),
       React.createElement('section', { 'aria-label': ko ? '3D 모델 (실험)' : '3D model (experimental)', style: { display: 'grid', gap: 10, borderTop: '1px solid rgba(127,127,127,.25)', paddingTop: 14 } },
         React.createElement('strong', null, ko ? '3D 모델 (실험)' : '3D model (experimental)'),
-        React.createElement('p', { style: { margin: 0, opacity: 0.7 } }, ko ? 'avatar.json과 모델 파일이 있는 폴더를 넣으면 캐릭터를 3D로 그립니다(바깥 펫 창 포함). 비우면 기본 캐릭터. 화면을 새로 불러올 때 적용됩니다.' : 'Set a folder with avatar.json and the model to draw the character in 3D (including the outside pet window). Empty uses the default character. Applies on reload.'),
+        React.createElement('p', { style: { margin: 0, opacity: 0.7 } }, ko ? 'avatar.json과 모델 파일이 있는 폴더를 지정하면 캐릭터를 3D로 표시합니다. 바깥 펫 창에도 적용됩니다. 비워 두면 기본 캐릭터를 사용합니다. 화면을 새로 불러오면 적용됩니다.' : 'Set a folder with avatar.json and the model to draw the character in 3D (including the outside pet window). Empty uses the default character. Applies on reload.'),
         React.createElement('label', { style: row },
           React.createElement('span', null, ko ? '모델 폴더' : 'Model folder'),
           React.createElement('input', { type: 'text', style: { flex: 1, maxWidth: 360 }, defaultValue: state.value?.avatarModelDir ?? '', placeholder: 'D:\\models\\avatar', disabled: off,
@@ -1037,18 +1037,18 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
           React.createElement('input', { type: 'number', min: 0, max: 1, step: 0.05, style: { width: 90 }, value: aoStrength(state.value?.avatarAoStrength), disabled: off,
             /** AO 세기를 범위 안으로 정리해 저장 */
             onChange: (event) => change('avatarAoStrength', aoStrength(event.target.value)) }))),
-      React.createElement('section', { 'aria-label': ko ? '단축키 - 캐릭터와 말풍선' : 'Shortcuts - Character and speech bubbles', style: { display: 'grid', gap: 10, borderTop: '1px solid rgba(127,127,127,.25)', paddingTop: 14 } },
-        React.createElement('strong', null, ko ? '단축키 - 캐릭터와 말풍선' : 'Shortcuts - Character and speech bubbles'),
+      React.createElement('section', { 'aria-label': ko ? '캐릭터와 말풍선 단축키' : 'Shortcuts - Character and speech bubbles', style: { display: 'grid', gap: 10, borderTop: '1px solid rgba(127,127,127,.25)', paddingTop: 14 } },
+        React.createElement('strong', null, ko ? '캐릭터와 말풍선 단축키' : 'Shortcuts - Character and speech bubbles'),
         React.createElement('p', { id: SHORTCUT_HINT_ID, style: { margin: 0, opacity: 0.7 } },
-          ko ? '칸을 누른 뒤 원하는 키 조합을 그대로 누르면 등록됩니다. Esc 취소, Backspace로 지우기'
+          ko ? '입력 칸을 누른 뒤 원하는 키 조합을 누르세요. Esc로 취소하고 Backspace로 지웁니다.'
             : 'Click the field, then press the keys you want. Esc cancels, Backspace clears.'),
         React.createElement(ShortcutField, {
-          label: ko ? '캐릭터와 말풍선 설정 토글 단축키 (비우면 사용 안 함)' : 'Character and speech bubbles setting toggle shortcut (empty to disable)',
+          label: ko ? '캐릭터와 말풍선 켜기·끄기 단축키 (비우면 사용 안 함)' : 'Character and speech bubbles setting toggle shortcut (empty to disable)',
           hintId: characterOn ? SHORTCUT_HINT_ID : SHORTCUT_HINT_ID + '-off',   // 꺼짐 안내는 별도 id (문서에 같은 id 두 개 금지)
           hint: characterOn ? '' : (ko ? '캐릭터와 말풍선이 꺼져 있어도 이 단축키로 다시 켤 수 있습니다.' : 'This shortcut still turns the character back on while it is off.'),
           value: shortcutValue,
           placeholder: 'Ctrl+Shift+D',
-          ariaLabel: ko ? '캐릭터와 말풍선 설정 토글 단축키 입력' : 'Record character and speech bubbles toggle shortcut',
+          ariaLabel: ko ? '캐릭터와 말풍선 켜기·끄기 단축키 입력' : 'Record character and speech bubbles toggle shortcut',
           ko, disabled: off,
           /** 녹음한 캐릭터 토글 단축키 저장 */
           onChange: (combo: string) => change('characterToggleKey', combo),
@@ -1058,7 +1058,7 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
           hintId: DRAG_HINT_ID,
           hint: !characterOn
             ? (ko ? '캐릭터와 말풍선이 꺼져 있을 때는 사용할 수 없습니다.' : 'Unavailable while the character and speech bubbles are off.')
-            : (ko ? '캐릭터를 집어 옮길 때 누르고 있어야 하는 키입니다. 수식 키(Alt·Ctrl·Shift·Cmd) 하나 또는 일반 키 하나를 등록합니다. 비우면 좌우 버튼을 함께 눌러야 합니다.'
+            : (ko ? '캐릭터를 끌어 옮기는 동안 누를 키를 지정합니다. 수식 키(Alt·Ctrl·Shift·Cmd)나 일반 키 중 하나를 등록하세요. 비워 두면 마우스 왼쪽·오른쪽 버튼을 함께 누른 채 끌어 옮깁니다.'
               : 'Hold this key while dragging to move the character. Record one modifier (Alt, Ctrl, Shift, Cmd) or one other key. Empty needs both buttons.'),
           value: dragKey,
           ariaLabel: ko ? '캐릭터 이동 키 입력' : 'Record drag key',
@@ -1081,7 +1081,7 @@ function settingsPage(ctx: DshContext, form: ConfigForm<PluginSettings>, updater
           hint: !characterOn
             ? (ko ? '캐릭터와 말풍선이 꺼져 있을 때는 사용할 수 없습니다. 캐릭터를 켜면 다시 쓸 수 있습니다.'
               : 'Unavailable while the character and speech bubbles are off. Turn the character on to use it again.')
-            : (ko ? '왼쪽 스위치는 이 단축키를 켜고 끕니다. 단축키는 캐릭터와 말풍선 설정을 끄는 것이 아니라, 캔버스만 잠시 숨기고 다시 표시합니다(그리기만 멈춤).'
+            : (ko ? '왼쪽 스위치로 이 단축키의 사용 여부를 정합니다. 단축키를 누르면 캐릭터 설정은 켜 둔 채 캔버스만 숨기거나 다시 표시합니다. 숨겨진 동안에는 그리기만 멈춥니다.'
               : 'The switch enables this shortcut. The shortcut does not turn the character or speech-bubble setting off; it only hides and shows the canvas by pausing drawing.'),
           value: canvasKeyValue,
           placeholder: 'Ctrl+Shift+H',
