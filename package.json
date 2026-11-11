@@ -1,6 +1,6 @@
 {
   "name": "deepseek-harness-kr",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "DeepSeek쟝 Plugin for DSH with KR — 한국어 화면과 파스텔 테마, Live2D 캐릭터를 더하는 DSH 플러그인",
   "type": "module",
   "license": "MIT",
