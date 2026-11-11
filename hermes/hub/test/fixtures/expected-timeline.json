@@ -1,0 +1,19 @@
+[
+  [0,"idle",null,null,null,null],
+  [0.05,"working",null,"sad233f8","desktop","chat"],
+  [5.254,"done",null,"sad233f8","desktop","chat"],
+  [9.354,"idle",null,"sad233f8","desktop","chat"],
+  [17.254,"working",null,"s3f5c6a5","tui","default"],
+  [21.891,"tool","execute_code","s3f5c6a5","tui","default"],
+  [23.749,"working",null,"s3f5c6a5","tui","default"],
+  [30.998,"tool","terminal","s3f5c6a5","tui","default"],
+  [33.855,"working",null,"s3f5c6a5","tui","default"],
+  [36.037,"done",null,"s3f5c6a5","tui","default"],
+  [40.137,"idle",null,"s3f5c6a5","tui","default"],
+  [48.037,"working",null,"s55007ba","cli","work"],
+  [56.713,"working",null,"s15dc65a","cli","work"],
+  [58.785,"working",null,"s7a4e69e","cli","work"],
+  [60.864,"failed",null,"s7a4e69e","cli","work"],
+  [65.964,"idle",null,"s7a4e69e","cli","work"],
+  [90.964,"idle",null,null,null,null]
+]

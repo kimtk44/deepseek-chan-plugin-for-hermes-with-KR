@@ -1,0 +1,20 @@
+{
+  "name": "dsc-hermes",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DeepSeek-chan pet for Hermes Agent: bridge plugin records session events, hub reduces them to one state, host drives the unmodified pet window",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test hub/test/*.test.mjs host/test/*.test.cjs",
+    "hub": "node hub/hub.mjs",
+    "host": "node host/host.mjs"
+  },
+  "engines": { "node": ">=22.19.0" },
+  "dependencies": {
+    "ws": "8.22.1"
+  },
+  "devDependencies": {
+    "electron": "^44.9.3"
+  }
+}

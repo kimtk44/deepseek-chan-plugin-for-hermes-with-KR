@@ -1,0 +1,25 @@
+name: companion-bridge
+version: 0.1.0
+description: "hermes-companion bridge (P0a record mode): observes lifecycle hooks and records a minimal event envelope per producer. Never blocks, modifies, or injects."
+author: "hermes-companion"
+kind: standalone
+# Hooks only, no capabilities: `hermes plugins enable` shows no consent screen
+# (hermes_cli/plugins_cmd.py _enable_consent runs only for declared capabilities).
+provides_hooks:
+  - on_session_start
+  - pre_llm_call
+  - post_llm_call
+  - pre_tool_call
+  - post_tool_call
+  - on_human_input_request
+  - on_human_input_resolved
+  - pre_approval_request
+  - post_approval_response
+  - api_request_error
+  - on_session_end
+  - agent_loop_stopped
+  - on_session_finalize
+  - on_session_reset
+  - on_session_delete
+  - subagent_start
+  - subagent_stop
